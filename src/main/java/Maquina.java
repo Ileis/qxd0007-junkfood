@@ -1,13 +1,12 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Maquina {
 
     private final int QTD_ESPIRAIS;
     private final int MAXIMO_PRODUTOS;
     private ArrayList<Espiral> espirais;
-    private double dinheiro;
-    private double saldo;
+    private double saldoCliente;
+    private double saldoMaquina;
 
     public Maquina(int qtdEspirais, int maximoProdutos){
         this.QTD_ESPIRAIS = qtdEspirais;
@@ -23,7 +22,7 @@ public class Maquina {
     }
 
     public double getFaturamento() {
-        return saldo;
+        return saldoMaquina;
     }
 
     public int getMaximoProdutos() {
@@ -31,7 +30,7 @@ public class Maquina {
     }
 
     public double getSaldoCliente() {
-        return dinheiro;
+        return saldoCliente;
     }
 
     public int getSizeEspirais(){
@@ -46,7 +45,7 @@ public class Maquina {
 
     public boolean inserirDinheiro(double value){
         if(value > 0) {
-            dinheiro += value;
+            saldoCliente += value;
 
             return true;
         }
@@ -54,8 +53,8 @@ public class Maquina {
     }
 
     public double receberTroco(){
-        double troco = dinheiro;
-        dinheiro = 0;
+        double troco = saldoCliente;
+        saldoCliente = 0;
         return troco;
     }
 
@@ -87,8 +86,8 @@ public class Maquina {
             if(qtdSuficiente(indice) && dinheiroSuficiente(indice)){
                 espirais.get(indice).venderProduto();
 
-                saldo += espirais.get(indice).getPreco();
-                dinheiro -= espirais.get(indice).getPreco();
+                receberSaldoMaquina(espirais.get(indice).getPreco());
+                descontarSaldoCliente(espirais.get(indice).getPreco());
 
                 if (espirais.get(indice).isEmpty())
                     limparEspiral(indice);
@@ -97,6 +96,14 @@ public class Maquina {
             }
         }
         return false;
+    }
+
+    private void receberSaldoMaquina(double value){
+        saldoMaquina += value;
+    }
+
+    private void descontarSaldoCliente(double value){
+        saldoCliente -= value;
     }
 
     private boolean indiceValido(int indice){
@@ -108,6 +115,6 @@ public class Maquina {
     }
 
     private boolean dinheiroSuficiente(int indice){
-        return (dinheiro >= espirais.get(indice).getPreco());
+        return (saldoCliente >= espirais.get(indice).getPreco());
     }
 }
